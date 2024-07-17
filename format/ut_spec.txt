@@ -1,0 +1,19 @@
+															
+		エンドポイント	/regist-review												
+		メソッド	post												
+		機能名	registReview												
+		入力フォーム	ReviewRegistForm												
+		■検査項目		入力					期待値						
+				レストランID	ユーザーID	訪問日	評価	一言コメント	HTTPステータス	HTML名	errorCode				
+				restauranId	userId	visitDate	rating	comment			restauranId	userId	visitDate	rating	comment
+	1	正常系	最小値	1	aaaa	2024/07/17	1	c	200	confirm-regist-review	-	-	-	-	-
+	2		最大値	1	aaaaaaaaaaaa	2024/07/17	5	cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc	200	confirm-regist-review	-	-	-	-	-
+	3		null値(必須のみ)	1	null	null	1	null	200	confirm-regist-review	-	-	-	-	-
+	4		空文字	1	aaaa	2024/07/17	1	a	200	confirm-regist-review	-	-	-	-	-
+	3	異常系	最小値	0	aaa	2024/07/17	0		200	regist-review	Min	Size		Min	Size
+	4		最大値	1	aaaaaaaaaaaaaaaaa	2024/07/17	6	ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc	200	regist-review		Size		Max	Size
+	5		null値	null	aaaa	今日	null	c	200	regist-review	NotNull			NotNull	
+	6		未来日	1	aaaa	明日	1	c	200	regist-review			Past		
+	7		空文字	1			1		200	regist-review		Size	typeMismatch		Size
+	8		空白文字												
+	9		全角文字												
