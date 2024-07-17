@@ -1,0 +1,33 @@
+																												
+		エンドポイント					/regist-review																					
+		HTTPメソッド					POST																					
+		機能名					registReview																					
+																												
+																												
+																												
+																												
+		リクエストフォーム																								項目チェック		
+		論理名											物理名	型	必須	最小	最大	enum								論理名	アノテーション	エラーメッセージ
+		レビューフォーム											reviewRegistForm	ReviewRegistForm												レストランID	@NotNull	入力してください。
+			レストランID										restauranId	Integer	有	1										レストランID	@Min	正の整数を入力してください。
+			ユーザーID										userId	String		4	16									ユーザーID	@Size	○文字から○文字で指定してください。
+			訪問日										visitDate	Date												訪問日	@Past	今日以前の日付を入力してください。
+			評価										rating	Integer	有	1	5									評価	@NotNull	入力してください。
+			一言コメント										comment	String		1	128									評価	@Min	○～○で指定してください。
+																										評価	@Max	○～○で指定してください。
+																										一言コメント	@Size	1文字から128文字で指定してください。
+																												
+																												
+																												
+																												
+																												
+																												
+																												
+																												
+																												
+																												
+																												
+																												
+																												
+																												
+																												
