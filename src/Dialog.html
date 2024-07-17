@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <base target="_top">
+</head>
+<body>
+  <p>フォルダ: <a id="folderLink" href="" target="_blank">Open Folder</a></p>
+  <p>生成ファイル: <a id="fileLink" href="" target="_blank">Open File</a></p>
+  <button onclick="deleteFile()">生成したファイルを削除する</button>
+  <script>
+    function updateLinks(fileUrl, folderUrl, fileName, folderName) {
+      // document.getElementById('fileLink').href = fileUrl;
+      var fileLink = document.getElementById('fileLink');
+      fileLink.href = fileUrl;
+      fileLink.textContent = fileName;
+
+      // document.getElementById('folderLink').href = folderUrl;
+      var folderLink = document.getElementById('folderLink');
+      folderLink.href = folderUrl;
+      folderLink.textContent = folderName;
+
+    }
+
+    function deleteFile() {
+      var fileUrl = document.getElementById('fileLink').href;
+      google.script.run
+        .withSuccessHandler(onSuccess)
+        .withFailureHandler(onFailure)
+        .deleteFileFromDrive(fileUrl);
+    }
+
+    function onSuccess(response) {
+      // alert(response);
+      google.script.host.close();
+    }
+
+    function onFailure(error) {
+      alert('Error: ' + error.message);
+    }
+  </script>
+</body>
+</html>
