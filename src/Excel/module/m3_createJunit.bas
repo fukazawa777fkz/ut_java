@@ -1,46 +1,46 @@
-Attribute VB_Name = "m3_createJunit"
 Option Explicit
 Private writeCurrent As Integer
 
-' ƒwƒbƒ_ì¬—p
+' ¥Ø¥Ã¥ÀºîÀ®ÍÑ
 Private fileNumber As Integer
 Private endpoint As String
 Private functionName As String
 Private methodType As String
-Private formTag As String
+Private formTagL As String
+Private formTagU As String
 
-' ƒZƒ‹
+' ¥»¥ë
 Private srcRangeSelection As Range
 Private srcRowSelection As Range
 Private startRange As Range
 
 
-' ƒŠƒXƒg
+' ¥ê¥¹¥È
 Private minList As Collection ' ItemInfo
 Private maxList As Collection ' ItemInfo
 Private requiredList As Collection ' ItemInfo
 Private enumList As Collection ' ItemInfo
 Private defaultList As Collection ' ItemInfo
 
-' ŠT—vF‰º‹L‚Ì‚æ‚¤‚ÈƒeƒXƒg‚ğì¬‚·‚é
+' ³µÍ×¡§²¼µ­¤Î¤è¤¦¤Ê¥Æ¥¹¥È¤òºîÀ®¤¹¤ë
 '    @Nested
 '    @DisplayName("/regist-review")
 '    class registReview {
 '        @Test
-'        public void ³íŒn_Å¬() throws Exception {
-' ‡@         mockMvc.perform(POST("/regist-review")
-' ‡A             .param("restaurantId", "0")
-' ª             .param("userId", "aaa")
-' ª             .param("visitDate", "2025-02-12")
-' ª             .param("rating", "0")
-' ª             .param("comment", ""))
-' ‡B             .andExpect(status().isOk())
-' ‡C             .andExpect(view().name(""))
-' ‡D             .andExpect(model().attributeHasFieldErrors("reviewRegistForm","restaurantId","userId","rating","comment"))
-' ‡E             .andExpect(model().attributeHasFieldErrorCode("reviewRegistForm","restaurantId","Min"))
-' ª             .andExpect(model().attributeHasFieldErrorCode("reviewRegistForm","userId","Size"))
-' ª         @  .andExpect(model().attributeHasFieldErrorCode("reviewRegistForm","rating","Min"))
-' ª             .andExpect(model().attributeHasFieldErrorCode("reviewRegistForm","comment","Size"));
+'        public void Àµ¾ï·Ï_ºÇ¾®() throws Exception {
+' ­¡         mockMvc.perform(POST("/regist-review")
+' ­¢             .param("restaurantId", "0")
+' ¢¬             .param("userId", "aaa")
+' ¢¬             .param("visitDate", "2025-02-12")
+' ¢¬             .param("rating", "0")
+' ¢¬             .param("comment", ""))
+' ­£             .andExpect(status().isOk())
+' ­¤             .andExpect(view().name(""))
+' ­¥             .andExpect(model().attributeHasFieldErrors("reviewRegistForm","restaurantId","userId","rating","comment"))
+' ­¦             .andExpect(model().attributeHasFieldErrorCode("reviewRegistForm","restaurantId","Min"))
+' ¢¬             .andExpect(model().attributeHasFieldErrorCode("reviewRegistForm","userId","Size"))
+' ¢¬         ¡¡  .andExpect(model().attributeHasFieldErrorCode("reviewRegistForm","rating","Min"))
+' ¢¬             .andExpect(model().attributeHasFieldErrorCode("reviewRegistForm","comment","Size"));
 '        }
 '    }
 Public Sub CreateTestCode()
@@ -48,45 +48,47 @@ Public Sub CreateTestCode()
     Call Initialize
     Dim i As Integer
     Dim testCaseValues As Variant
-    testCaseValues = srcRangeSelection.value  ' ƒeƒXƒgƒP[ƒXƒf[ƒ^
-    ' ƒNƒ‰ƒX’è‹`
+    testCaseValues = srcRangeSelection.value  ' ¥Æ¥¹¥È¥±¡¼¥¹¥Ç¡¼¥¿
+    ' ¥¯¥é¥¹ÄêµÁ
     CreateClassDefine
     
     Dim c As Range
     
     For Each c In srcRowSelection
     'For i = LBound(testCaseValues, 1) To UBound(testCaseValues, 1)
-        ' ƒeƒXƒgŠÖ”ì¬`ƒŠƒNƒGƒXƒg
-        ' ƒeƒXƒgŠÖ”
+        ' ¥Æ¥¹¥È´Ø¿ôºîÀ®¢·¥ê¥¯¥¨¥¹¥È
+        ' ¥Æ¥¹¥È´Ø¿ô
         Call CreateFuncRequest(c)
         
-        ' ƒŠƒNƒGƒXƒgƒpƒ‰ƒ[ƒ^
+        ' ¥ê¥¯¥¨¥¹¥È¥Ñ¥é¥á¡¼¥¿
         Call CreateRequestParam1(c)
         
-        ' ƒfƒtƒHƒ‹ƒgƒ‚ƒbƒN
+        ' ¥Ç¥Õ¥©¥ë¥È¥â¥Ã¥¯
         Call CreateMock(c)
         
-        ' post getƒƒ\ƒbƒh
+        ' post get¥á¥½¥Ã¥É
         Call CreateMetod(c)
         
-        ' ƒŠƒNƒGƒXƒg‚Ìƒpƒ‰ƒ[ƒ^İ’è‚ğì¬
-        Call CreateRequestParam2(c)
+        ' ¥ê¥¯¥¨¥¹¥È¤Î¥Ñ¥é¥á¡¼¥¿ÀßÄê¤òºîÀ®
+        ' Call CreateRequestParam2(c)
+        Call CreateRequestParam3(c)
         
-        ' HTTPƒXƒe[ƒ^ƒX
+        ' HTTP¥¹¥Æ¡¼¥¿¥¹
         Call CreateHttpStatus
         
-        ' HTML–¼
-        Call CreateReturnHtmlName(c.row)
+        ' HTMLÌ¾
+        Debug.Print c.Offset(0, -2).value & ":" & c.Offset(0, -1).value
+        Call CreateReturnHtmlName(c)
         
-        ' ƒGƒ‰[î•ñ
+        ' ¥¨¥é¡¼¾ğÊó
         Call CreateErrorInfo(c)
         
-        ' ƒeƒXƒgŠÖ”’è‹`I—¹
+        ' ¥Æ¥¹¥È´Ø¿ôÄêµÁ½ªÎ»
         Print #fileNumber, "        }"
         Print #fileNumber, ""
     Next
     
-    ' ƒNƒ‰ƒX’è‹`I—¹
+    ' ¥¯¥é¥¹ÄêµÁ½ªÎ»
     Print #fileNumber, "    }"
     
     Call Terminate
@@ -94,22 +96,22 @@ End Sub
 
 Private Sub Initialize()
     
-    ' headerƒZƒ‹
-    endpoint = Range("D2").value        'ƒGƒ“ƒhƒ|ƒCƒ“ƒg
-    methodType = Range("D3").value      'POST‚Æ‚©
-    functionName = Range("D4").value    'ƒNƒ‰ƒX–¼
+    ' header¥»¥ë
+    endpoint = Range("D2").value        '¥¨¥ó¥É¥İ¥¤¥ó¥È
+    methodType = Range("D3").value      'POST¤È¤«
+    functionName = Range("D4").value    '¥¯¥é¥¹Ì¾
     
-    'Form–¼
-    formTag = Range("D5").value
-    formTag = LCase(Left(formTag, 1)) & Mid(formTag, 2)
+    'FormÌ¾
+    formTagU = Range("D5").value
+    formTagL = LCase(Left(formTagU, 1)) & Mid(formTagU, 2)
     
 
-    ' inputƒZƒ‹
+    ' input¥»¥ë
     Set srcRangeSelection = ActiveWindow.RangeSelection
     Set srcRowSelection = Range(srcRangeSelection.Columns(1).Address)
     Set startRange = ActiveCell
     
-    'o—Íƒtƒ@ƒCƒ‹
+    '½ĞÎÏ¥Õ¥¡¥¤¥ë
     Dim filePath As String: filePath = ActiveWorkbook.Path & "\" & getClassName & "Test.java"
     fileNumber = FreeFile
     Open filePath For Output As #fileNumber
@@ -127,15 +129,15 @@ Private Sub CreateClassDefine()
     Print #fileNumber, Space(4) & "class " & functionName & " {"
 End Sub
 
-' ŠT—vFƒŠƒNƒGƒXƒg‚Ì‘—M•”•ª‚ğì¬‚·‚é
+' ³µÍ×¡§¥ê¥¯¥¨¥¹¥È¤ÎÁ÷¿®ÉôÊ¬¤òºîÀ®¤¹¤ë
 '
-' —á@F‰º‹L‚Ì‡@‚ğì¬‚·‚é
-' ‡@   @Test
-' ‡@   public void ³íŒn_Å¬() throws Exception {
-' ‡@       // ƒŠƒNƒGƒXƒg
-' ‡@       // ƒfƒtƒHƒ‹ƒgƒ‚ƒbƒN
-' ‡@       // defaultMock();
-' ‡@       mockMvc.perform(POST("/regist-review")
+' Îã¡¡¡§²¼µ­¤Î­¡¤òºîÀ®¤¹¤ë
+' ­¡   @Test
+' ­¡   public void Àµ¾ï·Ï_ºÇ¾®() throws Exception {
+' ­¡       // ¥ê¥¯¥¨¥¹¥È
+' ­¡       // ¥Ç¥Õ¥©¥ë¥È¥â¥Ã¥¯
+' ­¡       // defaultMock();
+' ­¡       mockMvc.perform(POST("/regist-review")
 '          .param("restaurantId", "0")
 '          .param("userId", "aaa")
 '          .param("visitDate", "2025-02-12")
@@ -146,7 +148,7 @@ End Sub
 '          .andExpect(model().attributeHasFieldErrors("reviewRegistForm","restaurantId","userId","rating","comment"))
 '          .andExpect(model().attributeHasFieldErrorCode("reviewRegistForm","restaurantId","Min"))
 '          .andExpect(model().attributeHasFieldErrorCode("reviewRegistForm","userId","Size"))
-'      @  .andExpect(model().attributeHasFieldErrorCode("reviewRegistForm","rating","Min"))
+'      ¡¡  .andExpect(model().attributeHasFieldErrorCode("reviewRegistForm","rating","Min"))
 '          .andExpect(model().attributeHasFieldErrorCode("reviewRegistForm","comment","Size"));
 Private Sub CreateFuncRequest(c As Range)
     Print #fileNumber, "        @Test"
@@ -154,40 +156,72 @@ Private Sub CreateFuncRequest(c As Range)
     Print #fileNumber, ""
 End Sub
 
-Private Sub CreateRequestParam1(c As Range)
-    Print #fileNumber, "            // ================== ƒŠƒNƒGƒXƒg =================="
-    Print #fileNumber, ""
+Private Sub CreateRequestParam1(rngCurrent As Range)
+    Dim currentFieldValues As Variant
+    Dim paramMaxCount As Integer
+    Dim paramCount As Integer
+    Dim j As Integer
+    Dim paramLine As String
+    Dim ret As Variant
+    Dim fields As Range
+    
+    
+    Print #fileNumber, "            // ================== ¥ê¥¯¥¨¥¹¥È =================="
+    Print #fileNumber, "            " + formTagU & " " & formTagL & " = new " & formTagU & "();"
+    
+    Set fields = Range(srcRangeSelection.Rows(rngCurrent.row - startRange.row + 1).Address)
+    
+    ' ¥ë¡¼¥×½èÍı
+    Dim c As Range
+    Dim rowRange As Range
+    For Each c In fields
+        ' ¥Ñ¥é¥á¡¼¥¿À¸À®
+        Dim fieldName As String: fieldName = c.Offset(startRange.row - rngCurrent.row - 1, 0).value
+        Dim fieldValue As String: fieldValue = convertValue(c.value)
+        
+        If c.value = "null" Then
+            GoTo ContinueLoop
+        End If
+        paramLine = "            " & formTagL & ".set" & UCase(Left(fieldName, 1)) & Mid(fieldName, 2) & "(" & fieldValue & ");"
+        ' ¥Õ¥¡¥¤¥ë½ñ¤­¹ş¤ß
+        Print #fileNumber, "    " + paramLine
+
+ContinueLoop:
+    Next
+
+
+
 End Sub
 
 
 Private Sub CreateMock(c As Range)
-    Print #fileNumber, "            // ================== ƒ‚ƒbƒN =================="
+    Print #fileNumber, "            // ================== ¥â¥Ã¥¯ =================="
     Print #fileNumber, "            defaultMock();"
     Print #fileNumber, ""
 End Sub
 
 Private Sub CreateMetod(c As Range)
-    Print #fileNumber, "            // ================== Às =================="
+    Print #fileNumber, "            // ================== ¼Â¹Ô =================="
     Print #fileNumber, "            mockMvc.perform(" & methodType & "(""" & endpoint & """)"
 End Sub
 
 
-' ŠT—vFƒŠƒNƒGƒXƒg‚Ìƒpƒ‰ƒ[ƒ^•”•ª‚ğì¬‚·‚é
+' ³µÍ×¡§¥ê¥¯¥¨¥¹¥È¤Î¥Ñ¥é¥á¡¼¥¿ÉôÊ¬¤òºîÀ®¤¹¤ë
 '
-' —á@F‰º‹L‚Ì‡A‚ğì¬‚·‚é
+' Îã¡¡¡§²¼µ­¤Î­¢¤òºîÀ®¤¹¤ë
 '      mockMvc.perform(POST("/regist-review")
-' ‡A       .param("restaurantId", "0")
-' ‡A       .param("userId", "aaa")
-' ‡A       .param("visitDate", "2025-02-12")
-' ‡A       .param("rating", "0")
-' ‡A       .param("comment", ""))
+' ­¢       .param("restaurantId", "0")
+' ­¢       .param("userId", "aaa")
+' ­¢       .param("visitDate", "2025-02-12")
+' ­¢       .param("rating", "0")
+' ­¢       .param("comment", ""))
 '          .andExpect(status().isOk())
 '          .andExpect(view().name(""))
 '          .andExpect(model().attributeHasFieldErrors("reviewRegistForm","restaurantId","userId","rating","comment"))
 '          .andExpect(model().attributeHasFieldErrorCode("reviewRegistForm","restaurantId","Min"))
-'  @      .andExpect(model().attributeHasFieldErrorCode("reviewRegistForm","userId","Size"))
-'      @  .andExpect(model().attributeHasFieldErrorCode("reviewRegistForm","rating","Min"))
-'  @      .andExpect(model().attributeHasFieldErrorCode("reviewRegistForm","comment","Size"));
+'  ¡¡      .andExpect(model().attributeHasFieldErrorCode("reviewRegistForm","userId","Size"))
+'      ¡¡  .andExpect(model().attributeHasFieldErrorCode("reviewRegistForm","rating","Min"))
+'  ¡¡      .andExpect(model().attributeHasFieldErrorCode("reviewRegistForm","comment","Size"));
 
 Private Sub CreateRequestParam2(rngCurrent As Range)
     Dim currentFieldValues As Variant
@@ -201,18 +235,17 @@ Private Sub CreateRequestParam2(rngCurrent As Range)
     
     Set fields = Range(srcRangeSelection.Rows(rngCurrent.row - startRange.row + 1).Address)
     
-    ' —LŒø‚È—v‘f”‚ğƒJƒEƒ“ƒg
+    ' Í­¸ú¤ÊÍ×ÁÇ¿ô¤ò¥«¥¦¥ó¥È
     paramMaxCount = CountNonNullElements(fields)
     paramCount = 0
     
-    ' ƒ‹[ƒvˆ—
-    'For j = LBound(currentFieldValues, 2) To UBound(currentFieldValues, 2)
+    ' ¥ë¡¼¥×½èÍı
     Dim c As Range
     Dim rowRange As Range
     
     For Each c In fields
         
-        ' ƒpƒ‰ƒ[ƒ^¶¬
+        ' ¥Ñ¥é¥á¡¼¥¿À¸À®
         Dim fieldName As String: fieldName = c.Offset(startRange.row - rngCurrent.row - 1, 0).value
         Dim fieldValue As String: fieldValue = convertValue(c.value)
         If c.value = "null" Then
@@ -220,42 +253,50 @@ Private Sub CreateRequestParam2(rngCurrent As Range)
         End If
         paramLine = "                .param(" & Chr(34) & fieldName & Chr(34) & ", " & fieldValue & ")"
         
-        ' ÅŒã‚Ìƒpƒ‰ƒ[ƒ^ˆ—
+        ' ºÇ¸å¤Î¥Ñ¥é¥á¡¼¥¿½èÍı
         paramCount = paramCount + 1
         If paramCount = paramMaxCount Then
             paramLine = paramLine & ")"
         End If
         
-        ' ƒtƒ@ƒCƒ‹‘‚«‚İ
+        ' ¥Õ¥¡¥¤¥ë½ñ¤­¹ş¤ß
         Print #fileNumber, "    " + paramLine
 
 ContinueLoop:
     Next
 End Sub
 
-' ŠT—vFƒŠƒNƒGƒXƒg‚ÌHTTPƒXƒe[ƒ^ƒX‚ğì¬‚·‚é
+' //                     .flashAttr("taskRegistForm", form)) // ¥Õ¥©¡¼¥à¥ª¥Ö¥¸¥§¥¯¥È¤òÁ÷¿®
+Private Sub CreateRequestParam3(rngCurrent As Range)
+    
+    ' ¥Õ¥¡¥¤¥ë½ñ¤­¹ş¤ß
+    Print #fileNumber, "                .flashAttr(" & Chr(34) & formTagL & Chr(34) & " , " & formTagL & ")) // ¥Õ¥©¡¼¥à¥ª¥Ö¥¸¥§¥¯¥È"
+
+End Sub
+
+' ³µÍ×¡§¥ê¥¯¥¨¥¹¥È¤ÎHTTP¥¹¥Æ¡¼¥¿¥¹¤òºîÀ®¤¹¤ë
 '
-' —á@F‰º‹L‚Ì‡B‚ğì¬‚·‚é
+' Îã¡¡¡§²¼µ­¤Î­£¤òºîÀ®¤¹¤ë
 '      mockMvc.perform(POST("/regist-review")
 '          .param("restaurantId", "0")
 '          .param("userId", "aaa")
 '          .param("visitDate", "2025-02-12")
 '          .param("rating", "0")
 '          .param("comment", ""))
-' ‡B       .andExpect(status().isOk())
+' ­£       .andExpect(status().isOk())
 '          .andExpect(view().name(""))
 '          .andExpect(model().attributeHasFieldErrors("reviewRegistForm","restaurantId","userId","rating","comment"))
 '          .andExpect(model().attributeHasFieldErrorCode("reviewRegistForm","restaurantId","Min"))
-' @       .andExpect(model().attributeHasFieldErrorCode("reviewRegistForm","userId","Size"))
-'      @  .andExpect(model().attributeHasFieldErrorCode("reviewRegistForm","rating","Min"))
-' @       .andExpect(model().attributeHasFieldErrorCode("reviewRegistForm","comment","Size"));
+' ¡¡       .andExpect(model().attributeHasFieldErrorCode("reviewRegistForm","userId","Size"))
+'      ¡¡  .andExpect(model().attributeHasFieldErrorCode("reviewRegistForm","rating","Min"))
+' ¡¡       .andExpect(model().attributeHasFieldErrorCode("reviewRegistForm","comment","Size"));
 Private Sub CreateHttpStatus()
     Print #fileNumber, "                .andExpect(status().isOk())"
 End Sub
 
-' ŠT—vFhtml–¼‚Ì‰ÓŠ‚ğì¬‚·‚é
+' ³µÍ×¡§htmlÌ¾¤Î²Õ½ê¤òºîÀ®¤¹¤ë
 '
-' —á@F‰º‹L‚Ì‡C‚ğì¬‚·‚é
+' Îã¡¡¡§²¼µ­¤Î­¤¤òºîÀ®¤¹¤ë
 '      mockMvc.perform(POST("/regist-review")
 '          .param("restaurantId", "0")
 '          .param("userId", "aaa")
@@ -263,20 +304,20 @@ End Sub
 '          .param("rating", "0")
 '          .param("comment", ""))
 '          .andExpect(status().isOk())
-' ‡C       .andExpect(view().name(""))
+' ­¤       .andExpect(view().name("task-regist-confirm"))
 '          .andExpect(model().attributeHasFieldErrors("reviewRegistForm","restaurantId","userId","rating","comment"))
 '          .andExpect(model().attributeHasFieldErrorCode("reviewRegistForm","restaurantId","Min"))
-' @       .andExpect(model().attributeHasFieldErrorCode("reviewRegistForm","userId","Size"))
-'      @  .andExpect(model().attributeHasFieldErrorCode("reviewRegistForm","rating","Min"))
-' @       .andExpect(model().attributeHasFieldErrorCode("reviewRegistForm","comment","Size"));
-Private Sub CreateReturnHtmlName(i As Integer)
-    Print #fileNumber, "                .andExpect(view().name(""" & getReturnHtml(i) & """))"
+' ¡¡       .andExpect(model().attributeHasFieldErrorCode("reviewRegistForm","userId","Size"))
+'      ¡¡  .andExpect(model().attributeHasFieldErrorCode("reviewRegistForm","rating","Min"))
+' ¡¡       .andExpect(model().attributeHasFieldErrorCode("reviewRegistForm","comment","Size"));
+Private Sub CreateReturnHtmlName(rngCurrent As Range)
+    Print #fileNumber, "                .andExpect(view().name(""" & rngCurrent.Offset(0, srcRangeSelection.Columns.count + 1).value & """))"
 End Sub
 
 
-' ŠT—vFƒGƒ‰[ŒŸØ‚Ìì¬
+' ³µÍ×¡§¥¨¥é¡¼¸¡¾Ú¤ÎºîÀ®
 '
-' —á@F‰º‹L‚Ì‡D‚Æ‡E‚ğì¬‚·‚é
+' Îã¡¡¡§²¼µ­¤Î­¥¤È­¦¤òºîÀ®¤¹¤ë
 '      mockMvc.perform(POST("/regist-review")
 '          .param("restaurantId", "0")
 '          .param("userId", "aaa")
@@ -285,101 +326,50 @@ End Sub
 '          .param("comment", ""))
 '          .andExpect(status().isOk())
 '          .andExpect(view().name(""))
-' ‡D       .andExpect(model().attributeHasFieldErrors("reviewRegistForm","restaurantId","userId","rating","comment"))
-' ‡E       .andExpect(model().attributeHasFieldErrorCode("reviewRegistForm","restaurantId","Min"))
-' ª       .andExpect(model().attributeHasFieldErrorCode("reviewRegistForm","userId","Size"))
-' ª   @  .andExpect(model().attributeHasFieldErrorCode("reviewRegistForm","rating","Min"))
-' ª       .andExpect(model().attributeHasFieldErrorCode("reviewRegistForm","comment","Size"));
+' ­¥       .andExpect(model().attributeHasFieldErrors("reviewRegistForm","restaurantId","userId","rating","comment"))
+' ­¦       .andExpect(model().attributeHasFieldErrorCode("reviewRegistForm","restaurantId","Min"))
+' ¢¬       .andExpect(model().attributeHasFieldErrorCode("reviewRegistForm","userId","Size"))
+' ¢¬   ¡¡  .andExpect(model().attributeHasFieldErrorCode("reviewRegistForm","rating","Min"))
+' ¢¬       .andExpect(model().attributeHasFieldErrorCode("reviewRegistForm","comment","Size"));
 Private Sub CreateErrorInfo(rngCurrent As Range)
     If isNormalTermination(rngCurrent) Then
         Print #fileNumber, "                .andExpect(model().hasNoErrors());"
     Else
         Dim fieldErrors As String
         fieldErrors = getFieldErrors(rngCurrent)
-        ' ‡D‚ğì¬
+        ' ­¥¤òºîÀ®
         Print #fileNumber, "                .andExpect(model().attributeHasFieldErrors(" & fieldErrors & "))"
         
-        ' ‡E‚ğì¬
+        ' ­¦¤òºîÀ®
         Dim rngFieldErrors As Range: Set rngFieldErrors = getFieldErrorRange(rngCurrent)
-        Dim errorCount As Integer: errorCount = 0   ' ÅI”»’è‚É—˜—pBƒGƒ‰[ÅŒã‚Í";"‚Å’÷‚ß‚éB
+        Dim errorCount As Integer: errorCount = 0   ' ºÇ½ªÈ½Äê¤ËÍøÍÑ¡£¥¨¥é¡¼ºÇ¸å¤Ï";"¤ÇÄù¤á¤ë¡£
         Dim errorNum As Integer:   errorNum = CountNonEmptyElements(rngFieldErrors)
         Dim c As Range
         For Each c In rngFieldErrors
             If c.value <> "" Then
-                ' ƒtƒB[ƒ‹ƒh–¼
+                ' ¥Õ¥£¡¼¥ë¥ÉÌ¾
                 Dim errorField As String: errorField = c.Offset(startRange.row - rngCurrent.row - 1, 0).value
-                ' ƒGƒ‰[ƒR[ƒh
+                ' ¥¨¥é¡¼¥³¡¼¥É
                 Dim errorCode As String: errorCode = c.value
-                ' ‡‘Ì‚P
-                Dim fieldErrorCode As String: fieldErrorCode = """" & formTag & """, """ & errorField & """, """ & errorCode & """"
-                ' ‡‘Ì‚Q
+                ' ¹çÂÎ£±
+                Dim fieldErrorCode As String: fieldErrorCode = """" & formTagL & """, """ & errorField & """, """ & errorCode & """"
+                ' ¹çÂÎ£²
                 Dim andExpect As String: andExpect = "                .andExpect(model().attributeHasFieldErrorCode(" & fieldErrorCode & "))"
                         
-                ' I—¹”»’èiÅŒã‚Í";"‚ğ•t‚¯‚éj
+                ' ½ªÎ»È½Äê¡ÊºÇ¸å¤Ï";"¤òÉÕ¤±¤ë¡Ë
                 If errorCount + 1 = errorNum Then
                     andExpect = andExpect & ";"
                 End If
                 
-                ' o—Í
+                ' ½ĞÎÏ
                 Print #fileNumber, andExpect
                 errorCount = errorCount + 1
                 
             End If
         Next
-
-'        Dim errorValues As Variant, errorCount As Integer, errorNum As Integer
-'        errorValues = getFieldErrorValues(rngCurrent, i)
-'        Dim errorNum As Integer:   errorNum = CountNonEmptyElements(errorValues)
-'        errorCount = 0
-'
-'        Dim errorIndex As Integer
-'        For errorIndex = LBound(errorValues, 2) To UBound(errorValues, 2)
-'            If errorValues(1, errorIndex) <> "" Then
-'                Dim errorField As String, fieldErrorCode As String
-'                'errorField = GetErrorFieldName(i, errorIndex)
-'                fieldErrorCode = """" & formTag & """, """ & errorField & """, """ & errorValues(1, errorIndex) & """"
-'
-'                Dim andExpect As String
-'                andExpect = "                .andExpect(model().attributeHasFieldErrorCode(" & fieldErrorCode & "))"
-'                If errorCount + 1 = errorNum Then andExpect = andExpect & ";"
-'
-'                Print #fileNumber, andExpect
-'                errorCount = errorCount + 1
-'            End If
-'        Next errorIndex
-
     End If
 End Sub
 
-
-'Public Function FindNonEmptyCell(ByVal cell As Range) As Variant
-'    Dim sheet As Worksheet
-'    Dim row As Long
-'    Dim column As Long
-'    Dim value As Variant
-'
-'    ' ƒAƒNƒeƒBƒu‚ÈƒZƒ‹‚ª‘®‚·‚éƒV[ƒg‚ğæ“¾
-'    Set sheet = cell.Parent
-'
-'    ' Œ»İ‚ÌƒZƒ‹‚Ìs‚Æ—ñ‚ğæ“¾
-'    row = cell.row
-'    column = cell.column
-'
-'    ' ‹ó‚Å‚È‚¢ƒZƒ‹‚ªŒ©‚Â‚©‚é‚Ü‚Åƒ‹[ƒv
-'    Do While row > 1 ' 1s–Ú‚Ü‚Å‚É§ŒÀ
-'        value = sheet.Cells(row, column).value
-'
-'        If Not IsEmpty(value) And value <> "" Then
-'            FindNonEmptyCell = value
-'            Exit Function
-'        End If
-'
-'        ' ˆê‚Âã‚Ìs‚ÉˆÚ“®
-'        row = row - 1
-'    Loop
-'
-'    FindNonEmptyCell = Null
-'End Function
 
 Private Function FindNonEmptyCell(rngCurrent As Range) As String
 
@@ -392,8 +382,8 @@ Private Function FindNonEmptyCell(rngCurrent As Range) As String
     Dim value As String
     Dim index As Integer
     
-    ' ‹ó‚Å‚È‚¢ƒZƒ‹‚ªŒ©‚Â‚©‚é‚Ü‚Åƒ‹[ƒv
-    Do While row > 1 ' 1s–Ú‚Ü‚Å‚É§ŒÀ
+    ' ¶õ¤Ç¤Ê¤¤¥»¥ë¤¬¸«¤Ä¤«¤ë¤Ş¤Ç¥ë¡¼¥×
+    Do While row > 1 ' 1¹ÔÌÜ¤Ş¤Ç¤ËÀ©¸Â
         value = rngCurrent.Offset(-index, TestTypePos).value
         
         If Not IsEmpty(value) And value <> "" Then
@@ -401,7 +391,7 @@ Private Function FindNonEmptyCell(rngCurrent As Range) As String
             Exit Function
         End If
         
-        ' ˆê‚Âã‚Ìs‚ÉˆÚ“®
+        ' °ì¤Ä¾å¤Î¹Ô¤Ë°ÜÆ°
         row = row - 1
         index = index + 1
     Loop
@@ -413,7 +403,7 @@ End Function
 Private Function GetTestFunctionName(c As Range) As String
     Dim TestType As String: TestType = FindNonEmptyCell(c)
     Dim testItem As String: testItem = c.Offset(0, -1).value
-    GetTestFunctionName = TestType + "_" + testItem
+    GetTestFunctionName = TestType & "_" & Format(c.Offset(0, -3).value, "000") & "_" & testItem
 End Function
 
 Private Function getClassName() As String
@@ -422,7 +412,7 @@ Private Function getClassName() As String
 End Function
 
 
-' —LŒø‚È—v‘f”‚ğƒJƒEƒ“ƒg
+' Í­¸ú¤ÊÍ×ÁÇ¿ô¤ò¥«¥¦¥ó¥È
 Private Function CountNonNullElements(rowRange As Range) As Integer
     Dim count As Integer: count = 0
     Dim c As Range
@@ -435,16 +425,16 @@ Private Function CountNonNullElements(rowRange As Range) As Integer
     CountNonNullElements = count
 End Function
 
-'' •\¦’l‚ğæ“¾
+'' É½¼¨ÃÍ¤ò¼èÆÀ
 'Private Function GetDisplayValue(value As Variant) As Variant
 '    Dim result(1) As Variant
 '
 '    Select Case value
-'        Case "ğ“ú": result(0) = "LocalDate.now().minusDays(1).toString()": result(1) = 0
-'        Case "¡“ú": result(0) = "LocalDate.now().toString()": result(1) = 0
-'        Case "–¾“ú": result(0) = "LocalDate.now().plusDays(1).toString()": result(1) = 0
-'        Case "–¾Œã“ú": result(0) = "LocalDate.now().plusDays(2).toString()": result(1) = 0
-'        Case "–¾XŒã“ú": result(0) = "LocalDate.now().plusDays(3).toString()": result(1) = 0
+'        Case "ºòÆü": result(0) = "LocalDate.now().minusDays(1).toString()": result(1) = 0
+'        Case "º£Æü": result(0) = "LocalDate.now().toString()": result(1) = 0
+'        Case "ÌÀÆü": result(0) = "LocalDate.now().plusDays(1).toString()": result(1) = 0
+'        Case "ÌÀ¸åÆü": result(0) = "LocalDate.now().plusDays(2).toString()": result(1) = 0
+'        Case "ÌÀ¡¹¸åÆü": result(0) = "LocalDate.now().plusDays(3).toString()": result(1) = 0
 '        Case Else
 '            If LCase(value) = "null" Then
 '                result(0) = "null": result(1) = 2
@@ -461,17 +451,23 @@ Private Function convertValue(value As String) As Variant
     Dim result As String
 
     Select Case value
-        Case "ğ“ú": result = "LocalDate.now().minusDays(1).toString()"
-        Case "¡“ú": result = "LocalDate.now().toString()"
-        Case "–¾“ú": result = "LocalDate.now().plusDays(1).toString()"
-        Case "–¾Œã“ú": result = "LocalDate.now().plusDays(2).toString()"
-        Case "–¾XŒã“ú": result = "LocalDate.now().plusDays(3).toString()"
+    '
+'        Case "ºòÆü": result = "LocalDate.now().minusDays(1).toString()"
+'        Case "º£Æü": result = "LocalDate.now().toString()"
+'        Case "ÌÀÆü": result = "LocalDate.now().plusDays(1).toString()"
+'        Case "ÌÀ¸åÆü": result = "LocalDate.now().plusDays(2).toString()"
+'        Case "ÌÀ¡¹¸åÆü": result = "LocalDate.now().plusDays(3).toString()"
+        Case "ºòÆü": result = "java.sql.Date.valueOf(LocalDate.now().minusDays(1).toString())"
+        Case "º£Æü": result = "java.sql.Date.valueOf(LocalDate.now().toString())"
+        Case "ÌÀÆü": result = "java.sql.Date.valueOf(LocalDate.now().plusDays(1).toString())"
+        Case "ÌÀ¸åÆü": result = "java.sql.Date.valueOf(LocalDate.now().plusDays(2).toString())"
+        Case "ÌÀ¡¹¸åÆü": result = "java.sql.Date.valueOf(LocalDate.now().plusDays(3).toString())"
         Case Else
             If LCase(value) = "null" Then
                 result = "null"
             ElseIf IsDate(value) Then
                 result = Format(value, "yyyy-mm-dd")
-                result = Chr(34) & result & Chr(34)
+                result = "java.sql.Date.valueOf(" & Chr(34) & result & Chr(34) & ")"
             Else
                 result = value
                 result = Chr(34) & result & Chr(34)
@@ -481,7 +477,7 @@ Private Function convertValue(value As String) As Variant
     convertValue = result
 End Function
 
-' ƒtƒB[ƒ‹ƒh’l‚ğæ“¾
+' ¥Õ¥£¡¼¥ë¥ÉÃÍ¤ò¼èÆÀ
 Private Function GetCurrentFieldValues(rowIndex As Integer) As Variant
     Dim r1 As Range, r2 As Range
     Set r1 = startRange.Offset(rowIndex, 0)
@@ -489,23 +485,23 @@ Private Function GetCurrentFieldValues(rowIndex As Integer) As Variant
     GetCurrentFieldValues = sheet.Range(r1.Address & ":" & r2.Address).value
 End Function
 
-' ƒtƒB[ƒ‹ƒh–¼‚ğæ“¾
+' ¥Õ¥£¡¼¥ë¥ÉÌ¾¤ò¼èÆÀ
 Private Function GetFieldName(columnIndex As Integer) As String
 
     GetFieldName = startRange.Offset(-1, columnIndex - startRange.row).value
 End Function
 
 
-Private Function getReturnHtml(rowIndex As Integer) As String
-    'getReturnHtml = startRange.Offset(rowIndex - startRange.row, srcRangeSelection.Columns.count + 1).value
-    getReturnHtml = startRange.Offset(0, srcRangeSelection.Columns.count + 1).value
-End Function
+'Private Function getReturnHtml(rowIndex As Integer) As String
+'    'getReturnHtml = startRange.Offset(rowIndex - startRange.row, srcRangeSelection.Columns.count + 1).value
+'    getReturnHtml = startRange.Offset(0, srcRangeSelection.Columns.count + 1).value
+'End Function
 
 Private Function isNormalTermination(rngCurrent As Range) As Boolean
 
     'Dim testcase As String: testcase = FindNonEmptyCell(startRange.Offset(c.row, -2))
     Dim testcase As String: testcase = FindNonEmptyCell(rngCurrent)
-    If testcase = "³íŒn" Then
+    If testcase = "Àµ¾ï·Ï" Then
       isNormalTermination = True
     Else
       isNormalTermination = False
@@ -518,7 +514,7 @@ Private Function getFieldErrors(rngCurrent As Range) As String
     
     Dim fields As String: fields = gerCurrentErrors(rngCurrent)
     
-    getFieldErrors = Chr(34) + formTag + Chr(34) + "," + fields
+    getFieldErrors = Chr(34) + formTagL + Chr(34) + "," + fields
     
 End Function
 
@@ -526,10 +522,10 @@ Function gerCurrentErrors(rngCurrent As Range) As String
     
     Dim ret As String
     
-    ' errorCode‚ÌsiMin, Size‚È‚Ç‘‚©‚ê‚Ä‚¢‚éƒZƒ‹”ÍˆÍj‚ğæ“¾
+    ' errorCode¤Î¹Ô¡ÊMin, Size¤Ê¤É½ñ¤«¤ì¤Æ¤¤¤ë¥»¥ëÈÏ°Ï¡Ë¤ò¼èÆÀ
     Dim currentErrorFieldRange As Range: Set currentErrorFieldRange = getFieldErrorRange(rngCurrent)
     
-    ' ƒGƒ‰[‚ª‚ ‚Á‚½iMin, Size‚È‚Ç‘‚©‚ê‚Ä‚¢‚éjƒtƒB[ƒ‹ƒh–¼‚ğ•Ô‚·
+    ' ¥¨¥é¡¼¤¬¤¢¤Ã¤¿¡ÊMin, Size¤Ê¤É½ñ¤«¤ì¤Æ¤¤¤ë¡Ë¥Õ¥£¡¼¥ë¥ÉÌ¾¤òÊÖ¤¹
     Dim c As Range
     For Each c In currentErrorFieldRange
         
@@ -552,8 +548,8 @@ End Function
 
 Private Function getFieldErrorRange(rngCurrent As Range) As Range
     
-    ' ƒGƒ‰[‚ª‚ ‚é€–Ú‚ğ•Ô‚·B
-    ' errorCode‚ÌsiMin, Size‚È‚Ç‘‚©‚ê‚Ä‚¢‚éƒZƒ‹”ÍˆÍj‚ğ•Ô‚·B
+    ' ¥¨¥é¡¼¤¬¤¢¤ë¹àÌÜ¤òÊÖ¤¹¡£
+    ' errorCode¤Î¹Ô¡ÊMin, Size¤Ê¤É½ñ¤«¤ì¤Æ¤¤¤ë¥»¥ëÈÏ°Ï¡Ë¤òÊÖ¤¹¡£
     Dim fields As Range: Set fields = Range(srcRangeSelection.Rows(rngCurrent.row).Address)
     Dim r1 As Range: Set r1 = rngCurrent.Offset(0, fields.Columns.count + FixedFiledNum)
     Dim r2 As Range: Set r2 = rngCurrent.Offset(0, fields.Columns.count + FixedFiledNum + fields.Columns.count - 1)

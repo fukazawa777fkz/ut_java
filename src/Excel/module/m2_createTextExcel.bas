@@ -1,4 +1,3 @@
-Attribute VB_Name = "m2_createTextExcel"
 Private writeCurrent As Integer
 
 Private srcHeaderRange As Range
@@ -7,7 +6,7 @@ Private srcRangeSelection As Range
 Private destHeaderRange As Range
 Private destBodyRange As Range
 
-' ƒŠƒXƒg
+' ãƒªã‚¹ãƒˆ
 Private minList As Collection ' ItemInfo
 Private maxList As Collection ' ItemInfo
 Private requiredList As Collection ' ItemInfo
@@ -16,19 +15,19 @@ Private defaultList As Collection ' ItemInfo
 
 Public Sub CreateUnitTestExcel()
 
-    ' // ‰Šú‰»
+    ' // åˆæœŸåŒ–
     Call Initialize
     
-    ' // ƒwƒbƒ_‚ğì¬
+    ' // ãƒ˜ãƒƒãƒ€ã‚’ä½œæˆ
     Call writeHeader
     
-    ' // Œ±•\‚ğì¬
+    ' // è©¦é¨“è¡¨ã‚’ä½œæˆ
     Call createTable
     
-    ' // ³íŒn‚ğì¬
+    ' // æ­£å¸¸ç³»ã‚’ä½œæˆ
     Call writeNormal
     
-    ' // ˆÙíŒn‚ğì¬
+    ' // ç•°å¸¸ç³»ã‚’ä½œæˆ
     Call writeAbnormal
     
 End Sub
@@ -37,12 +36,25 @@ End Sub
 Private Sub Initialize()
     
     
-    ' inputƒZƒ‹
+    ' inputã‚»ãƒ«
     Set srcRangeSelection = ActiveWindow.RangeSelection
     Set srcHeaderRange = ActiveSheet.Range("C2")
     
-    ' outputƒZƒ‹
-    Worksheets.Add
+    ' outputã‚»ãƒ«
+    Dim srcWs As Worksheet: Set srcWs = ActiveSheet ' ç¾åœ¨ã®ã‚¢ã‚¯ãƒ†ã‚£ãƒ–ãªã‚·ãƒ¼ãƒˆã‚’å–å¾—
+    Dim dstWs As Worksheet: Set dstWs = Worksheets.Add(After:=srcWs) ' ç¾åœ¨ã®ã‚·ãƒ¼ãƒˆã®å³å´ã«æ–°ã—ã„ã‚·ãƒ¼ãƒˆã‚’è¿½åŠ 
+    Dim ws As Worksheet
+    Dim find As Boolean
+    For Each ws In Worksheets
+        If ws.name = srcWs.name & "_å˜ä½“ãƒ†ã‚¹ãƒˆ" Then
+            find = True
+            Exit For
+        End If
+    Next
+    If find = False Then
+        dstWs.name = srcWs.name & "_å˜ä½“ãƒ†ã‚¹ãƒˆ"
+    End If
+    
     Set destHeaderRange = ActiveSheet.Range("C2")
     Set destBodyRange = ActiveSheet.Range("E8")
     
@@ -52,43 +64,43 @@ Private Sub Initialize()
     Set enumList = New Collection
     Set defaultList = New Collection
     
-    ' o—ÍˆÊ’u
+    ' å‡ºåŠ›ä½ç½®
     writeCurrent = 1
     
-    ' ƒŠƒXƒg
+    ' ãƒªã‚¹ãƒˆ
     Dim c As Range
     For Each c In srcRangeSelection
         
         Dim index As Integer
         Dim oItem As ItemInfo
         
-        ' ƒfƒtƒHƒ‹ƒg
+        ' ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆ
         Set oItem = New ItemInfo
         Call oItem.constructor(c, index, "")
         Call defaultList.Add(oItem)
         
-        ' •K{ƒŠƒXƒg
+        ' å¿…é ˆãƒªã‚¹ãƒˆ
         If c.Offset(0, srcPos.offsetRequired).value <> "" Then
             Set oItem = New ItemInfo
             Call oItem.constructor(c, index, getRequiredValue(c))
             Call requiredList.Add(oItem)
         End If
         
-        ' enumƒŠƒXƒg
+        ' enumãƒªã‚¹ãƒˆ
         If c.Offset(0, srcPos.offsetEnum).value <> "" Then
             oItem = New ItemInfo
             Call oItem.constructor(c, index, "")
             enumList.Add (oItem)
         End If
         
-        ' minƒŠƒXƒg, maxƒŠƒXƒg
+        ' minãƒªã‚¹ãƒˆ, maxãƒªã‚¹ãƒˆ
         If c.Offset(0, srcPos.offsetMin).value <> "" And c.Offset(0, srcPos.offsetMax).value <> "" Then
-            ' minƒŠƒXƒg
+            ' minãƒªã‚¹ãƒˆ
             Set oItem = New ItemInfo
             Call oItem.constructor(c, index, c.Offset(0, srcPos.offsetMin).value)
             Call minList.Add(oItem)
         
-            ' maxƒŠƒXƒg
+            ' maxãƒªã‚¹ãƒˆ
             Set oItem = New ItemInfo
             Call oItem.constructor(c, index, c.Offset(0, srcPos.offsetMax).value)
             Call maxList.Add(oItem)
@@ -112,42 +124,42 @@ Private Function getRequiredValue(rng As Range)
     If typeInfo = "String" Then
     
     Else
-        ' // Å¬‚ª‚ ‚é‚È‚çÅ¬’l
+        ' // æœ€å°ãŒã‚ã‚‹ãªã‚‰æœ€å°å€¤
         If min <> "" Then
             getRequiredValue = rng.Offset(0, srcPos.offsetMin).value
             Exit Function
         End If
         
-        ' // Å‘å‚ª‚ ‚é‚È‚çÅ‘å’l
+        ' // æœ€å¤§ãŒã‚ã‚‹ãªã‚‰æœ€å¤§å€¤
         If max <> "" Then
             getRequiredValue = rng.Offset(0, srcPos.offsetMax).value
             Exit Function
         End If
     End If
     
-    ' “K“–‚É6
+    ' é©å½“ã«6
     getRequiredValue = 6
     Exit Function
     
 End Function
 
 Private Sub writeHeader()
-    destHeaderRange.Offset(0, 0).value = "ƒGƒ“ƒhƒ|ƒCƒ“ƒg"
+    destHeaderRange.Offset(0, 0).value = "ã‚¨ãƒ³ãƒ‰ãƒã‚¤ãƒ³ãƒˆ"
     destHeaderRange.Offset(0, 1).value = srcHeaderRange.Offset(0, 5).value
-    destHeaderRange.Offset(1, 0).value = "ƒƒ\ƒbƒh"
+    destHeaderRange.Offset(1, 0).value = "ãƒ¡ã‚½ãƒƒãƒ‰"
     destHeaderRange.Offset(1, 1).value = srcHeaderRange.Offset(1, 5).value
-    destHeaderRange.Offset(2, 0).value = "‹@”\–¼"
+    destHeaderRange.Offset(2, 0).value = "æ©Ÿèƒ½å"
     destHeaderRange.Offset(2, 1).value = srcHeaderRange.Offset(2, 5).value
-    destHeaderRange.Offset(3, 0).value = "“ü—ÍƒtƒH[ƒ€"
+    destHeaderRange.Offset(3, 0).value = "å…¥åŠ›ãƒ•ã‚©ãƒ¼ãƒ "
     destHeaderRange.Offset(3, 1).value = getClassName()
 End Sub
 
 Private Sub createTable()
     
-    destBodyRange.Offset(-2, 0).value = "“ü—Í"
-    destBodyRange.Offset(-2, srcRangeSelection.count + 0).value = "Šú‘Ò’l"
-    destBodyRange.Offset(-1, srcRangeSelection.count + 0).value = "HTTPƒXƒe[ƒ^ƒX"
-    destBodyRange.Offset(-1, srcRangeSelection.count + 1).value = "HTML–¼"
+    destBodyRange.Offset(-2, 0).value = "å…¥åŠ›"
+    destBodyRange.Offset(-2, srcRangeSelection.count + 0).value = "æœŸå¾…å€¤"
+    destBodyRange.Offset(-1, srcRangeSelection.count + 0).value = "HTTPã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹"
+    destBodyRange.Offset(-1, srcRangeSelection.count + 1).value = "HTMLå"
     destBodyRange.Offset(-1, srcRangeSelection.count + 2).value = "errorCode"
     
     Dim c As Range
@@ -170,26 +182,26 @@ End Function
 
 Private Sub writeNormal()
     
-    ' ³íŒn
-    destBodyRange.Offset(writeCurrent, -2).value = "³íŒn"
+    ' æ­£å¸¸ç³»
+    destBodyRange.Offset(writeCurrent, -2).value = "æ­£å¸¸ç³»"
     
-    ' Å¬
-    destBodyRange.Offset(writeCurrent, -1).value = "Å¬"
+    ' æœ€å°
+    destBodyRange.Offset(writeCurrent, -1).value = "æœ€å°"
     Call setFeildsValues(eTestType.NORMAL, minList, 0)
     writeCurrent = writeCurrent + 1
     
-    ' Å‘å
-    destBodyRange.Offset(writeCurrent, -1).value = "Å‘å"
+    ' æœ€å¤§
+    destBodyRange.Offset(writeCurrent, -1).value = "æœ€å¤§"
     Call setFeildsValues(eTestType.NORMAL, maxList, 0)
     writeCurrent = writeCurrent + 1
     
-    ' •K{‚Ì‚İ
-    destBodyRange.Offset(writeCurrent, -1).value = "•K{‚Ì‚İ"
+    ' å¿…é ˆã®ã¿
+    destBodyRange.Offset(writeCurrent, -1).value = "å¿…é ˆã®ã¿"
     Call setFeildsValues(eTestType.NORMAL, requiredList, 0, True)
     writeCurrent = writeCurrent + 1
     
-    ' ‹ó•¶š
-    destBodyRange.Offset(writeCurrent, -1).value = "‹ó•¶š"
+    ' ç©ºæ–‡å­—
+    destBodyRange.Offset(writeCurrent, -1).value = "ç©ºæ–‡å­—"
     Call setFieldsDirect("")
     writeCurrent = writeCurrent + 1
     
@@ -197,58 +209,58 @@ End Sub
 
 Sub writeAbnormal()
 
-    ' ³íŒn
-    destBodyRange.Offset(writeCurrent, -2).value = "ˆÙíŒn"
+    ' æ­£å¸¸ç³»
+    destBodyRange.Offset(writeCurrent, -2).value = "ç•°å¸¸ç³»"
     
-    ' Å¬
-    destBodyRange.Offset(writeCurrent, -1).value = "Å¬"
+    ' æœ€å°
+    destBodyRange.Offset(writeCurrent, -1).value = "æœ€å°"
     Call setFeildsValues(eTestType.ABNORMAL, minList, -1)
     writeCurrent = writeCurrent + 1
     
-    ' Å‘å
-    destBodyRange.Offset(writeCurrent, -1).value = "Å‘å"
+    ' æœ€å¤§
+    destBodyRange.Offset(writeCurrent, -1).value = "æœ€å¤§"
     Call setFeildsValues(eTestType.ABNORMAL, maxList, 1)
     writeCurrent = writeCurrent + 1
     
-    ' •K{
-    destBodyRange.Offset(writeCurrent, -1).value = "null’l"
+    ' å¿…é ˆ
+    destBodyRange.Offset(writeCurrent, -1).value = "nullå€¤"
     Call setFeildsValues(eTestType.ABNORMAL, requiredList, 0, True, True)
     writeCurrent = writeCurrent + 1
     
-    ' ‹ó•¶š
-    destBodyRange.Offset(writeCurrent, -1).value = "‹ó•¶š"
+    ' ç©ºæ–‡å­—
+    destBodyRange.Offset(writeCurrent, -1).value = "ç©ºæ–‡å­—"
     Call setFieldsDirect("", True)
     writeCurrent = writeCurrent + 1
     
-    ' ”¼ŠpƒXƒy[ƒX
-    destBodyRange.Offset(writeCurrent, -1).value = "”¼ŠpƒXƒy[ƒX"
+    ' åŠè§’ã‚¹ãƒšãƒ¼ã‚¹
+    destBodyRange.Offset(writeCurrent, -1).value = "åŠè§’ã‚¹ãƒšãƒ¼ã‚¹"
     Call setFieldsDirect(" ", False)
     writeCurrent = writeCurrent + 1
     
-    ' ‘SŠpƒXƒy[ƒX
-    destBodyRange.Offset(writeCurrent, -1).value = "‘SŠpƒXƒy[ƒX"
-    Call setFieldsDirect("@", False)
+    ' å…¨è§’ã‚¹ãƒšãƒ¼ã‚¹
+    destBodyRange.Offset(writeCurrent, -1).value = "å…¨è§’ã‚¹ãƒšãƒ¼ã‚¹"
+    Call setFieldsDirect("ã€€", False)
     writeCurrent = writeCurrent + 1
 
 End Sub
 
-' * ŠT—vF“ü—Í’l‚ğİ’è‚·‚é
-' * paramFlist ‘ÎÛƒŠƒXƒg
-' * paramFvalueOffset ˆÙíŒn‚Ìİ’è‚ğ‚·‚éê‡‚Í’l‚ğİ’è‚µ‚Ä‚¨‚­
-' * paramFisRequired •K{“ü—Í€–Ú‚©‚Ç‚¤‚©i‚»‚Ì‘¼‚Ìİ’è‚ğ‚·‚é‚Æ‚«A•K{‚Å‚È‚¢‚à‚Ì‚Ínull‚Éİ’è‚³‚ê‚éj
-' * paramFisToggle •K{“ü—Í€–Ú‚Å‚È‚¢‚à‚Ì‚ğnull‚ğİ’è‚·‚é‚æ‚¤‚É‚È‚é
+' * æ¦‚è¦ï¼šå…¥åŠ›å€¤ã‚’è¨­å®šã™ã‚‹
+' * paramï¼šlist å¯¾è±¡ãƒªã‚¹ãƒˆ
+' * paramï¼švalueOffset ç•°å¸¸ç³»ã®è¨­å®šã‚’ã™ã‚‹å ´åˆã¯å€¤ã‚’è¨­å®šã—ã¦ãŠã
+' * paramï¼šisRequired å¿…é ˆå…¥åŠ›é …ç›®ã‹ã©ã†ã‹ï¼ˆãã®ä»–ã®è¨­å®šã‚’ã™ã‚‹ã¨ãã€å¿…é ˆã§ãªã„ã‚‚ã®ã¯nullã«è¨­å®šã•ã‚Œã‚‹ï¼‰
+' * paramï¼šisToggle å¿…é ˆå…¥åŠ›é …ç›®ã§ãªã„ã‚‚ã®ã‚’nullã‚’è¨­å®šã™ã‚‹ã‚ˆã†ã«ãªã‚‹
 
 Private Sub setFeildsValues(TestType, list As Collection, valueOffset, Optional isRequired = False, Optional isToggle = False)
 
 
-  ' null‚Ìw’è‚ÍAisToggle‚ğŒ³‚Éİ’è‚·‚é
+  ' nullã®æŒ‡å®šã¯ã€isToggleã‚’å…ƒã«è¨­å®šã™ã‚‹
     Dim index As Integer
     Dim ItemInfo As ItemInfo
     Dim rngObj As Range
     Dim errorCodeType As String
     Dim ws As Worksheet
 
-    ' list ‚ğ”z—ñ‚Æ‚µ‚Äƒ‹[ƒvˆ—
+    ' list ã‚’é…åˆ—ã¨ã—ã¦ãƒ«ãƒ¼ãƒ—å‡¦ç†
     ' For index = LBound(list) To UBound(list)
     
     For index = 1 To list.count
@@ -273,12 +285,12 @@ Private Sub setFeildsValues(TestType, list As Collection, valueOffset, Optional 
                 Call setErrorCode(TestType, "Size", rngObj, ItemInfo)
             End If
 
-            ' ‹ó”’ƒZƒ‹‚Ì”wŒiF‚ğ•ÏX
+            ' ç©ºç™½ã‚»ãƒ«ã®èƒŒæ™¯è‰²ã‚’å¤‰æ›´
             If rngObj.value = "" Then
                 Set ws = rngObj.Worksheet
                 Debug.Print ws.name
                 Debug.Print rngObj.Address
-                rngObj.Interior.Color = RGB(255, 255, 0) ' ‰©F
+                rngObj.Interior.Color = RGB(255, 255, 0) ' é»„è‰²
             End If
 
         Else
@@ -299,7 +311,7 @@ Private Sub setFeildsValues(TestType, list As Collection, valueOffset, Optional 
         End If
     Next index
 
-    ' ‘ÎÛƒŠƒXƒg‚É‚È‚©‚Á‚½ƒtƒB[ƒ‹ƒh‚ğİ’è
+    ' å¯¾è±¡ãƒªã‚¹ãƒˆã«ãªã‹ã£ãŸãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ã‚’è¨­å®š
     Call SetOtherFieldsValue(list, isRequired, isToggle, TestType, valueOffset)
 
 End Sub
@@ -339,21 +351,21 @@ Private Sub SetOtherFieldsValue(list As Collection, ByVal isRequired As Boolean,
     Dim ws As Worksheet
     
 
-    ' defaultList ‚Ìƒ‹[ƒv
+    ' defaultList ã®ãƒ«ãƒ¼ãƒ—
     For index = 1 To defaultList.count
     
-        Set ItemInfo = defaultList.Item(index) 'Me.defaultList(index) ' ƒNƒ‰ƒX‚Ü‚½‚Í«‘ƒIƒuƒWƒFƒNƒg‚ğ‘z’è
+        Set ItemInfo = defaultList.Item(index) 'Me.defaultList(index) ' ã‚¯ãƒ©ã‚¹ã¾ãŸã¯è¾æ›¸ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’æƒ³å®š
         
         Debug.Print ItemInfo.physics
         
-        ' ‘ÎÛƒŠƒXƒg‚ÉŠÜ‚Ü‚ê‚Ä‚¢‚È‚¢‚©Šm”F
+        ' å¯¾è±¡ãƒªã‚¹ãƒˆã«å«ã¾ã‚Œã¦ã„ãªã„ã‹ç¢ºèª
         If (isContain(list, defaultList.Item(index).physics) = False) Then
             
-            ' ‘ÎÛƒZƒ‹‚Ìæ“¾
+            ' å¯¾è±¡ã‚»ãƒ«ã®å–å¾—
             'Set rngObj = Me.stdRange.Offset(Me.current, itemInfo("fileId"))
             Set rngObj = destBodyRange.Offset(writeCurrent, ItemInfo.fileId)
            
-            ' ğŒ‚É‚æ‚é’lİ’è
+            ' æ¡ä»¶ã«ã‚ˆã‚‹å€¤è¨­å®š
             If isRequired = True And isToggle = False Then
                 rngObj.value = "null"
             Else
@@ -382,7 +394,7 @@ Private Sub SetOtherFieldsValue(list As Collection, ByVal isRequired As Boolean,
                     value = 2
                 End If
                 
-                ' Œ^•Êˆ—
+                ' å‹åˆ¥å‡¦ç†
                 If ItemInfo.typeInfo = "Integer" Or ItemInfo.typeInfo = "Int" Then
                     rngObj.value = value
                     errorCodeType = "Max"
@@ -404,10 +416,10 @@ Private Sub SetOtherFieldsValue(list As Collection, ByVal isRequired As Boolean,
                     rngObj.value = value
                 End If
                 
-                ' ’l‚ª‹ó‚È‚ç”wŒiF•ÏX•ƒfƒoƒbƒOƒƒO
+                ' å€¤ãŒç©ºãªã‚‰èƒŒæ™¯è‰²å¤‰æ›´ï¼†ãƒ‡ãƒãƒƒã‚°ãƒ­ã‚°
                 If rngObj.value = "" Then
                     Debug.Print rngObj.Address
-                    rngObj.Interior.Color = RGB(255, 255, 0) ' ‰©F
+                    rngObj.Interior.Color = RGB(255, 255, 0) ' é»„è‰²
                 End If
             End If
         End If
@@ -426,7 +438,7 @@ Private Sub setFieldsDirect(paramValue As String, Optional ByVal isStringForced 
         Set rngObj = destBodyRange.Offset(writeCurrent, ItemInfo.fileId)
         value = ItemInfo.value
         
-        ' value ‚ª‹ó‚Ìê‡Amin ‚© max ‚ğ‘ã“ü
+        ' value ãŒç©ºã®å ´åˆã€min ã‹ max ã‚’ä»£å…¥
         If value = "" And ItemInfo.min <> "" Then
             value = ItemInfo.min
         End If
@@ -434,7 +446,7 @@ Private Sub setFieldsDirect(paramValue As String, Optional ByVal isStringForced 
             value = ItemInfo.max
         End If
         
-        ' ƒf[ƒ^Œ^‚É‰‚¶‚½ˆ—
+        ' ãƒ‡ãƒ¼ã‚¿å‹ã«å¿œã˜ãŸå‡¦ç†
         If ItemInfo.typeInfo = "Integer" Or ItemInfo.typeInfo = "Int" Then
             If value = "" Then value = 0
             rngObj.value = value
@@ -451,16 +463,16 @@ Private Sub setFieldsDirect(paramValue As String, Optional ByVal isStringForced 
             End If
         
         ElseIf ItemInfo.typeInfo = "Date" Then
-            ' ¡“ú‚Ì“ú•t‚ğæ“¾iyyyy/MM/ddj
+            ' ä»Šæ—¥ã®æ—¥ä»˜ã‚’å–å¾—ï¼ˆyyyy/MM/ddï¼‰
             formattedDate = Format(Date, "yyyy/MM/dd")
             rngObj.value = formattedDate
         Else
             rngObj.value = paramValue
         End If
         
-        ' ƒZƒ‹‚ª‹ó‚È‚ç”wŒiF‚ğ‰©F‚É‚·‚é
+        ' ã‚»ãƒ«ãŒç©ºãªã‚‰èƒŒæ™¯è‰²ã‚’é»„è‰²ã«ã™ã‚‹
         If rngObj.value = "" Then
-            Debug.Print rngObj.Address ' Logger.log() ‚Ì‘ã‚í‚è‚ÉƒfƒoƒbƒOo—Í
+            Debug.Print rngObj.Address ' Logger.log() ã®ä»£ã‚ã‚Šã«ãƒ‡ãƒãƒƒã‚°å‡ºåŠ›
             rngObj.Interior.Color = RGB(255, 255, 0)
         End If
     Next

@@ -1,4 +1,3 @@
-Attribute VB_Name = "m1_createDataClass"
 Private rngAnnotation As Range
 
 Private Sub init()
@@ -9,23 +8,23 @@ Sub create_data_class()
 
     Call init
 
-    'o—Íƒtƒ@ƒCƒ‹
+    'å‡ºåŠ›ãƒ•ã‚¡ã‚¤ãƒ«
     Dim filePath As String: filePath = ActiveWorkbook.Path & "\" & getClassName & ".java"
     Dim fileNumber As Integer: fileNumber = FreeFile
     Open filePath For Output As #fileNumber
 
-    ' // ŠÖ”ƒwƒbƒ_ì¬
+    ' // é–¢æ•°ãƒ˜ãƒƒãƒ€ä½œæˆ
     Call createFuncHeder(fileNumber)
     
-    ' // ŠÖ”–{‘Ìì¬
+    ' // é–¢æ•°æœ¬ä½“ä½œæˆ
     Call createFuncBody(fileNumber)
     
-    ' ƒtƒ@ƒCƒ‹‚ğ•Â‚¶‚é
+    ' ãƒ•ã‚¡ã‚¤ãƒ«ã‚’é–‰ã˜ã‚‹
     Close #fileNumber
 
 End Sub
 
-' ' // ŠÖ”ƒwƒbƒ_ì¬
+' ' // é–¢æ•°ãƒ˜ãƒƒãƒ€ä½œæˆ
  Private Sub createFuncHeder(fileNumber)
 
     Print #fileNumber, "/**"
@@ -39,7 +38,7 @@ End Sub
     Print #fileNumber, " */"
  End Sub
 
-' // ŠÖ”–{‘Ìì¬
+' // é–¢æ•°æœ¬ä½“ä½œæˆ
  Private Sub createFuncBody(fileNumber)
  
     Print #fileNumber, "@Data"
@@ -48,14 +47,14 @@ End Sub
     Dim c As Range
     For Each c In ActiveWindow.RangeSelection
         
-        ' // ˜_—–¼
+        ' // è«–ç†å
         Print #fileNumber, "    // " + c.value
         
-        ' // ƒAƒmƒe[ƒVƒ‡ƒ“
+        ' // ã‚¢ãƒãƒ†ãƒ¼ã‚·ãƒ§ãƒ³
         Debug.Print c.value
         Call createAnotationForList(fileNumber, c)
         
-        ' // ƒƒ“ƒo’è‹`
+        ' // ãƒ¡ãƒ³ãƒå®šç¾©
         Print #fileNumber, "    private " & c.Offset(0, srcPos.offsetType).value; " " + c.Offset(0, srcPos.offsetPhysical).value & ";"
         Print #fileNumber, ""
     Next
@@ -71,7 +70,7 @@ Private Function getClassName() As String
 End Function
 
 
-' // ƒAƒmƒe[ƒVƒ‡ƒ“ì¬
+' // ã‚¢ãƒãƒ†ãƒ¼ã‚·ãƒ§ãƒ³ä½œæˆ
 Private Sub createAnotationForList(fileNumber, rngCurrent)
     Dim physics As String: physics = rngCurrent.Offset(0, srcPos.offsetPhysical).value
     Dim required As String: required = rngCurrent.Offset(0, srcPos.offsetRequired).value
@@ -81,62 +80,62 @@ Private Sub createAnotationForList(fileNumber, rngCurrent)
     
     Dim clAnnotation As New Collection
     
-    ' // •K{€–Ú
-    If required = "—L" Then
-        Print #fileNumber, "    " + "@NotNull" + "(message=" + Chr(34) + "“ü—Í‚µ‚Ä‚­‚¾‚³‚¢B" + Chr(34) + ")"
+    ' // å¿…é ˆé …ç›®
+    If required = "æœ‰" Then
+        Print #fileNumber, "    " + "@NotNull" + "(message=" + Chr(34) + "å…¥åŠ›ã—ã¦ãã ã•ã„ã€‚" + Chr(34) + ")"
         Call clAnnotation.Add("@NotNull")
     End If
 
     If stype = "String" Then
-        ' w’è‚ ‚èiÅ¬EÅ‘åj
+        ' æŒ‡å®šã‚ã‚Šï¼ˆæœ€å°ãƒ»æœ€å¤§ï¼‰
         If min <> "" And max <> "" Then
             
             If min = max Then
-                Print #fileNumber, "    " + "@Size(min=" + min + ",max=" + max + ",message=" + Chr(34) + min + "•¶š‚Å" + "w’è‚µ‚Ä‚­‚¾‚³‚¢B" + Chr(34) + ")"
+                Print #fileNumber, "    " + "@Size(min=" + min + ",max=" + max + ",message=" + Chr(34) + min + "æ–‡å­—ã§" + "æŒ‡å®šã—ã¦ãã ã•ã„ã€‚" + Chr(34) + ")"
             Else
-                Print #fileNumber, "    " + "@Size(min=" + min + ",max=" + max + ",message=" + Chr(34) + min + "•¶š‚©‚ç" + max + "•¶š‚Å" + "w’è‚µ‚Ä‚­‚¾‚³‚¢B" + Chr(34) + ")"
+                Print #fileNumber, "    " + "@Size(min=" + min + ",max=" + max + ",message=" + Chr(34) + min + "æ–‡å­—ã‹ã‚‰" + max + "æ–‡å­—ã§" + "æŒ‡å®šã—ã¦ãã ã•ã„ã€‚" + Chr(34) + ")"
             End If
             Call clAnnotation.Add("@Size")
         End If
         
-        ' w’è‚ ‚èiÅ¬j
+        ' æŒ‡å®šã‚ã‚Šï¼ˆæœ€å°ï¼‰
         If min <> "" And max = "" Then
-            Print #fileNumber, "    " + "@Size(min=" + min + ",message=" + Chr(34) + min + "•¶šˆÈã‚Å" + "w’è‚µ‚Ä‚­‚¾‚³‚¢B" + Chr(34) + ")"
+            Print #fileNumber, "    " + "@Size(min=" + min + ",message=" + Chr(34) + min + "æ–‡å­—ä»¥ä¸Šã§" + "æŒ‡å®šã—ã¦ãã ã•ã„ã€‚" + Chr(34) + ")"
             Call clAnnotation.Add("@Size")
         End If
         
-        ' w’è‚ ‚èiÅ‘åj
+        ' æŒ‡å®šã‚ã‚Šï¼ˆæœ€å¤§ï¼‰
         If min = "" And max <> "" Then
-            Print #fileNumber, "    " + "@Size(max=" + max + ",message=" + Chr(34) + max + "•¶šˆÈ‰º‚Å" + "w’è‚µ‚Ä‚­‚¾‚³‚¢B" + Chr(34) + ")"
+            Print #fileNumber, "    " + "@Size(max=" + max + ",message=" + Chr(34) + max + "æ–‡å­—ä»¥ä¸‹ã§" + "æŒ‡å®šã—ã¦ãã ã•ã„ã€‚" + Chr(34) + ")"
             Call clAnnotation.Add("@Size")
         End If
     End If
 
     If stype = "Integer" Then
         If min <> "" And max <> "" Then
-            Print #fileNumber, "    " + "@Min(value=" + min + ",message=" + Chr(34) + min + "-" + max + "‚Å" + "w’è‚µ‚Ä‚­‚¾‚³‚¢B" + Chr(34) + ")"
-            Print #fileNumber, "    " + "@Max(value=" + max + ",message=" + Chr(34) + min + "-" + max + "‚Å" + "w’è‚µ‚Ä‚­‚¾‚³‚¢B" + Chr(34) + ")"
+            Print #fileNumber, "    " + "@Min(value=" + min + ",message=" + Chr(34) + min + "-" + max + "ã§" + "æŒ‡å®šã—ã¦ãã ã•ã„ã€‚" + Chr(34) + ")"
+            Print #fileNumber, "    " + "@Max(value=" + max + ",message=" + Chr(34) + min + "-" + max + "ã§" + "æŒ‡å®šã—ã¦ãã ã•ã„ã€‚" + Chr(34) + ")"
             Call clAnnotation.Add("@Min")
             Call clAnnotation.Add("@Max")
         End If
         
         If min <> "" And max = "" Then
             If min = 1 Then
-                Print #fileNumber, "    " + "@Min(value=" + min + ",message=" + Chr(34) + "³‚Ì®”‚ğ“ü—Í‚µ‚Ä‚­‚¾‚³‚¢B" + Chr(34) & ")"
+                Print #fileNumber, "    " + "@Min(value=" + min + ",message=" + Chr(34) + "æ­£ã®æ•´æ•°ã‚’å…¥åŠ›ã—ã¦ãã ã•ã„ã€‚" + Chr(34) & ")"
                 Call clAnnotation.Add("@Min")
             Else
-                Print #fileNumber, "    " + "@Min(value=" + min + ",message=" + Chr(34) + min + "ˆÈã‚Å" + "w’è‚µ‚Ä‚­‚¾‚³‚¢B" + Chr(34) + ")"
+                Print #fileNumber, "    " + "@Min(value=" + min + ",message=" + Chr(34) + min + "ä»¥ä¸Šã§" + "æŒ‡å®šã—ã¦ãã ã•ã„ã€‚" + Chr(34) + ")"
                 Call clAnnotation.Add("@Min")
             End If
         End If
         
         If min = "" And max <> "" Then
-            Print #fileNumber, "    " + "@Max(value=" + max + ",message=" + Chr(34) + max + "ˆÈ‰º‚Å" + "w’è‚µ‚Ä‚­‚¾‚³‚¢B" + Chr(34) + ")"
+            Print #fileNumber, "    " + "@Max(value=" + max + ",message=" + Chr(34) + max + "ä»¥ä¸‹ã§" + "æŒ‡å®šã—ã¦ãã ã•ã„ã€‚" + Chr(34) + ")"
             Call clAnnotation.Add("@Max")
         End If
     End If
         
-    ' ƒAƒmƒe[ƒVƒ‡ƒ“ƒŠƒXƒg‚à’Ç‰Ái’A‚µAŠù‚É‚Â‚¯‚Ä‚¢‚éƒAƒmƒe[ƒVƒ‡ƒ“‚Í–³‹j
+    ' ã‚¢ãƒãƒ†ãƒ¼ã‚·ãƒ§ãƒ³ãƒªã‚¹ãƒˆã‚‚è¿½åŠ ï¼ˆä½†ã—ã€æ—¢ã«ã¤ã‘ã¦ã„ã‚‹ã‚¢ãƒãƒ†ãƒ¼ã‚·ãƒ§ãƒ³ã¯ç„¡è¦–ï¼‰
     Dim c As Range
     For Each c In rngAnnotation
         If c.value = rngCurrent.value Then
