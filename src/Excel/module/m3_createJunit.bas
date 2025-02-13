@@ -14,6 +14,8 @@ Private srcRangeSelection As Range
 Private srcRowSelection As Range
 Private startRange As Range
 
+' 出力ファイルフルパス
+Private filePath As String
 
 ' リスト
 Private minList As Collection ' ItemInfo
@@ -112,7 +114,12 @@ Private Sub Initialize()
     Set startRange = ActiveCell
     
     '出力ファイル
-    Dim filePath As String: filePath = ActiveWorkbook.Path & "\" & getClassName & "Test.java"
+    Dim folderPath As String: folderPath = ActiveWorkbook.Path & "\test\"
+    ' フォルダが無ければ作成
+    If Dir(folderPath, vbDirectory) = "" Then
+        MkDir folderPath
+    End If
+    filePath = folderPath & getClassName & "Test.java"
     fileNumber = FreeFile
     Open filePath For Output As #fileNumber
     
@@ -121,6 +128,13 @@ End Sub
 
 Private Sub Terminate()
     Close #fileNumber
+    
+    If MsgBox("作成したファイルを開く？", vbYesNo) = vbYes Then
+        Dim strExe As String
+        strExe = "C:\Program Files (x86)\sakura\sakura.exe"
+        Shell strExe & " " & filePath, vbNormalFocus
+    End If
+
 End Sub
 
 Private Sub CreateClassDefine()

@@ -9,7 +9,12 @@ Sub create_data_class()
     Call init
 
     '出力ファイル
-    Dim filePath As String: filePath = ActiveWorkbook.Path & "\" & getClassName & ".java"
+    Dim folderPath As String: folderPath = ActiveWorkbook.Path & "\dto\"
+    ' フォルダが無ければ作成
+    If Dir(folderPath, vbDirectory) = "" Then
+        MkDir folderPath
+    End If
+    Dim filePath As String: filePath = folderPath & getClassName & ".java"
     Dim fileNumber As Integer: fileNumber = FreeFile
     Open filePath For Output As #fileNumber
 
@@ -21,6 +26,14 @@ Sub create_data_class()
     
     ' ファイルを閉じる
     Close #fileNumber
+    
+    ' ファイルを開く？
+    If MsgBox("作成したファイルを開く？", vbYesNo) = vbYes Then
+        Dim strExe As String
+        strExe = "C:\Program Files (x86)\sakura\sakura.exe"
+        Shell strExe & " " & filePath, vbNormalFocus
+    End If
+    
 
 End Sub
 
