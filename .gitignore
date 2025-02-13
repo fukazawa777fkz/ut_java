@@ -1,1 +1,3 @@
 src/Excel/TaskRegistTest.java
+src/Excel/dto/*
+src/Excel/test/*
